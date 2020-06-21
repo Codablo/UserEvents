@@ -1,23 +1,22 @@
 import * as Koa from "koa"
-import * as Router from "koa-router"
 import * as logger from "koa-logger"
 import * as json from "koa-json"
+import * as bodyParser from "koa-bodyparser"
+import * as etag from "koa-etag"
+
+import router from "./routes/apiRouter"
 
 const app = new Koa()
-const router = new Router();
 
-router.get("/", async (ctx, next) => {
-    ctx.body = { msg: "Hello world!"}
-    await next()
-})
-
+//TODO: Add auth middleware
 app.use(json())
-app.use(logger())
-
-app.use(router.routes())
+    .use(logger())
+    .use(bodyParser())
+    // .use(etag())
+    .use(router.routes())
     .use(router.allowedMethods())
 
     app.listen(8080, () => {
-        console.log("Koa Started")
+        console.log("User Event web server started.")
     })
     
