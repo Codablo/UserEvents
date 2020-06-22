@@ -17,6 +17,20 @@ You can use the following from the root directory
 node .
 ```
 
+# Routes
+```
+GET  /user
+GET  /user/:userid
+POST /user/:userid
+GET  /user/:userid/event?sinceDate=1592792747481
+POST /user/:userid/event
+GET  /user/:userid/event/:eventid?sinceDate=1592792747481
+GET  /user/event?sinceDate=1592792747481
+
+sinceDate is optional to filter on events based on date
+```
+
+
 # General Notes
 This project had several first for me.  Some of my firsts included
 * Node app
