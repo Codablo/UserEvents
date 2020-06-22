@@ -10,8 +10,9 @@ export class UserService {
     }
 
     upsertUser(user :User) :User {
+        this.validateRequiredFields(user)
         this.validateIsUniqueEmail(user)
-        this.isValidPhoneNumberFormat(user.phone)
+        this.validatePhoneNumberFormat(user.phone)
             
         return this.userRepository.upsertUser(user)
     }
@@ -23,12 +24,18 @@ export class UserService {
         }
     }
 
-    private isValidPhoneNumberFormat(phoneNumber :string) :void {
+    private validatePhoneNumberFormat(phoneNumber :string) :void {
         if(phoneNumber) {
             let validPhoneRegex = /^\d{3}-\d{3}-\d{4}$/
             if(!validPhoneRegex.test(phoneNumber) ) {
                 throw new Error("Phone number must be of format: '###-###-####'.")
             }
+        }
+    }
+
+    private validateRequiredFields(user :User) {
+        if(!user || !user.email || !user.password) {
+            throw new Error("'email' and 'password' are required fields.")
         }
     }
 }

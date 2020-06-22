@@ -19,15 +19,18 @@ const userEventService = new UserEventService(userEventRepository)
 
 apiRouter.post("/user", async (ctx, next) => {
     const createUserRequest = <User> ctx.request.body;
+    let createdUser :User = null
 
-    //TODO: Validate 
-
-    const createdUser = userService.upsertUser(createUserRequest)
-
-    ctx.status = 201
-    ctx.body = createdUser
-    ctx.set('Location', `/user/${createdUser.id}`)
-
+    try {
+        createdUser = userService.upsertUser(createUserRequest)
+        ctx.status = 201
+        ctx.body = createdUser
+        ctx.set('Location', `/user/${createdUser.id}`)
+    } catch(error) {
+        ctx.body = error.message;
+        ctx.status = 400
+    }
+    
     await next()
 })
 
@@ -60,15 +63,18 @@ apiRouter.get("/user/:userid/event", async (ctx, next) => {
 
 apiRouter.post("/user/:userid/event", async (ctx, next) => {
     const userEvent = <UserEvent> ctx.request.body
-
     userEvent.userId = ctx.params.userid
-    //TODO: Validate 
 
-    const createdUserEvent = userEventService.insertUserEvent(userEvent);
-
-    ctx.status = 201
-    ctx.body = createdUserEvent
-    ctx.set('Location', `/user/${createdUserEvent.userId}/event/${createdUserEvent.id}`)
+    try {
+        const createdUserEvent = userEventService.insertUserEvent(userEvent);
+        ctx.status = 201
+        ctx.body = createdUserEvent
+        ctx.set('Location', `/user/${createdUserEvent.userId}/event/${createdUserEvent.id}`)
+    } catch (error) {
+        ctx.status = 400
+        ctx.body = error.message   
+    }
+    
     await next()
 })
 

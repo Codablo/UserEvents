@@ -12,9 +12,9 @@ const app = new Koa()
 app.use(json())
     .use(logger())
     .use(bodyParser())
-    // .use(etag())
     .use(router.routes())
     .use(router.allowedMethods())
+    .use(etag())
 
     app.listen(8080, () => {
         console.log("User Event web server started.")
