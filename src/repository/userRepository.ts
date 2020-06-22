@@ -27,7 +27,6 @@ export class UserRepository {
     }
 
     upsertUser(user: User): User {
-        console.log(user)
         if(!user.id) {
             user.id = uuid()
         }

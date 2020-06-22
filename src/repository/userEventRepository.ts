@@ -13,8 +13,7 @@ export class UserEventRepository {
 
     insertUserEvent(userEvent :UserEvent) :UserEvent {
         userEvent.id = uuid()
-
-        this.userEventDB.concat(userEvent)
+        this.userEventDB.push(userEvent)
         return userEvent
     }
 
@@ -27,6 +26,10 @@ export class UserEventRepository {
 
         if(userEventFilter.sinceDate) {
             qualifyingEvents = _.filter(this.userEventDB, userEvent => userEvent.created >= userEventFilter.sinceDate)
+        }
+
+        if(userEventFilter.userEventId) {
+            qualifyingEvents = _.filter(this.userEventDB, userEvent => userEvent.id >= userEventFilter.userEventId)
         }
 
         return qualifyingEvents

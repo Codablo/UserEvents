@@ -7,6 +7,7 @@ import { UserService } from "../service/userService"
 import { UserEventRepository } from '../repository/UserEventRepository';
 import { UserEventService } from '../service/userEventService';
 import { ParameterizedContext } from 'koa';
+import { filter } from 'lodash';
 
 const apiRouter = new Router()
 
@@ -30,22 +31,25 @@ apiRouter.post("/user", async (ctx, next) => {
     await next()
 })
 
-apiRouter
-    .get("/user/:userid", async (ctx, next) => {
-        const user = userService.getUser(ctx.params.userid)
-        if(!user) {
-            ctx.status = 404
-        } else {
-            ctx.body = user
-        }
-        await next()
-    })
+apiRouter.get("/user/:userid", async (ctx, next) => {
+    const user = userService.getUser(ctx.params.userid)
+    if(!user) {
+        ctx.status = 404
+    } else {
+        ctx.body = user
+    }
+    await next()
+})
 
 
 
 apiRouter.get("/user/event", async (ctx, next) => {
-    const sinceDate =  ctx.request.query.sinceDate
-    ctx.body = userEventService.getEvents(getUserEventFilter(ctx))
+
+    //Hack since this is picking up :userid   :(
+    const filter = getUserEventFilter(ctx)
+    filter.userId = null
+
+    ctx.body = userEventService.getEvents(filter)
     await next()
 })
 
@@ -69,7 +73,14 @@ apiRouter.post("/user/:userid/event", async (ctx, next) => {
 })
 
 apiRouter.get("/user/:userid/event/:eventid", async (ctx, next) => {
-    ctx.body = userEventService.getEvents(getUserEventFilter(ctx))
+
+    const events = userEventService.getEvents(getUserEventFilter(ctx))
+    if(events.length < 1) {
+        ctx.status = 404
+    } else {
+        ctx.body = events
+    }
+    
     await next()
 })
 
