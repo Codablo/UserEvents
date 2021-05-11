@@ -23,7 +23,7 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^9.0.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "uuidv4": "^6.1.0"
   },
   "devDependencies": {
